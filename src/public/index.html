@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>To-Do List API</title>
+  </head>
+  <body>
+    <h1>To-Do List</h1>
+    <input type="text" name="" id="taskInput" />
+    <button type="submit" onclick="createTask()">Submit Task</button>
+    <ul id="ulTaskList"></ul>
+
+    <script>
+      async function getTasks(params) {
+        const response = await fetch("/api/tasks"); // espera a resposta chegar
+        const tasks = await response.json(); // espera o corpo ser lido e convertido para JavaScript
+
+        const ulList = document.getElementById("ulTaskList");
+
+        ulList.innerHTML = ""; //limpa a lista pra ela não se repetir toda vez com o forEach abaixo
+
+        tasks.forEach((taskItem) => {
+          const newItem = document.createElement("li");
+          const deleteButton = document.createElement("button");
+          const editButton = document.createElement("button");
+
+          deleteButton.onclick = () => deleteTask(taskItem.id); // onclick é uma propriedade que recebe uma função
+          editButton.onclick = () => editTask(taskItem.id, taskItem.task);
+
+          const span = document.createElement("span");
+          span.textContent = taskItem.task;
+          deleteButton.textContent = "Deletar";
+          editButton.textContent = "Editar";
+          newItem.appendChild(span);
+          newItem.appendChild(deleteButton);
+          newItem.appendChild(editButton);
+          //O appendChild adiciona um elemento dentro de outro como filho. Você pode chamar ele várias vezes e cada chamada adiciona ao que já existe, sem apagar o anterior.
+          //É diferente do textContent que substitui tudo que está dentro do elemento. O appendChild apenas acrescenta.
+
+          ulList.append(newItem);
+
+          //Isso é apenas para ajudar no CSS
+          const buttonsDiv = document.createElement("div");
+          buttonsDiv.classList.add("divButtons")
+
+          editButton.classList.add("editBtn")
+          deleteButton.classList.add("deleteBtn")
+
+          buttonsDiv.appendChild(editButton);
+          buttonsDiv.appendChild(deleteButton);
+
+          newItem.appendChild(span);
+          newItem.appendChild(buttonsDiv);
+        });
+      }
+
+      async function createTask() {
+        const input = document.getElementById("taskInput");
+
+        const response = await fetch("api/tasks", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }, //metadado informando à API o formato do body
+          body: JSON.stringify({ task: input.value }), //os dados enviados; JSON.stringify converte o objeto JavaScript para texto JSON
+        });
+
+        getTasks();
+        input.value = ""; //limpa o input após criar a task
+      }
+
+      async function deleteTask(id) {
+        const response = await fetch(`/api/tasks/${id}`, {
+          method: "DELETE",
+        });
+        getTasks();
+      }
+
+      async function editTask(id, currentTask) {
+        // event.target == button que chama o editTask()
+        const li = event.target.closest("li");
+
+        // encontra o <span> dentro desse <li> -> span é o 'item', é o que mostra a task e os botoes
+        const span = li.querySelector("span");
+
+        // cria um input já preenchido com o texto atual
+        const input = document.createElement("input");
+        input.value = currentTask;
+
+        // substitui o span pelo input
+        li.replaceChild(input, span);
+
+        const editButton = event.target;
+        editButton.textContent = "Salvar";
+        editButton.onclick = () => saveTask(id, input);
+      }
+
+      async function saveTask(id, input) {
+        const response = await fetch(`/api/tasks/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" }, //metadado informando à API o formato do body
+          body: JSON.stringify({ task: input.value }), //os dados enviados; converte o objeto JavaScript para texto JSON
+        });
+
+        getTasks();
+      }
+      getTasks();
+    </script>
+  </body>
+</html>
