@@ -1,6 +1,16 @@
+:root{
+    --darkPurple: #1B003F;
+    --purple: #4c008299;
+    --white: #E6E6FA;
+    --lightBlue: #6495ED;
+
+    --hoverWhite:#e6e6fa66;
+}
+
+
 body{
     margin: 0;
-    background-color:#1F1F1E;
+    background-color:var(--darkPurple);
     margin-left: 20px;
 }
 
@@ -10,10 +20,10 @@ ul{
 }
 li{
     display: flex;
-    color: white;
+    color: var(--white);
     padding: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.56);
-    background-color: #373735;
+    border: 1px solid var(--white);
+    background-color: var(--purple);
     margin-bottom: 10px;
     border-radius: 5px;
     text-decoration: none;
@@ -22,20 +32,19 @@ li{
 }
 
 li:hover{
-    border: 1px solid #4682D5;
-    background-color: #424240;
+    background-color: var(--hoverWhite);
 }
 
 button{
     border-radius: 5px;
     padding: 5px;
-    background-color: #373735;
-    border: 2px solid  rgba(255, 255, 255, 0.56);
-    color: whitesmoke;
+    background-color: var(--purple);
+    border: 2px solid  var(--white);
+    color: var(--white);
 }
 
 button:hover{
-    background-color: #424240;
+    background-color: var(--hoverWhite);
 }
 
 .divButtons{
@@ -52,7 +61,7 @@ button:hover{
 }
 
 input{
-    background-color: #373735;
+    background-color: var(--purple);
     border:1px solid rgba(255, 255, 255, 0.56);
     padding: 5px;
     border-radius: 5px;

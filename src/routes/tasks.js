@@ -30,8 +30,16 @@ routes.post("/api/tasks", (req, res) => {
     if (!taskSentByUser){
         return res.status(400).send({message:"The task field cannot be empty"})
     }
+
+    let lastId;
+    if (taskList.length === 0){
+        lastId = 0 // caso a lista esteja vazia
+    } else {
+        lastId = taskList[taskList.length - 1].id //pega o id do último usuário e soma +1
+    }
+
     const newTask = {
-        id: taskList[taskList.length - 1].id + 1, //pega o id do último usuário e soma +1
+        id: lastId + 1, 
         task: taskSentByUser
     }
     taskList.push(newTask)
